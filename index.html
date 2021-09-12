@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Star Clients</title>
+
+    </head>
+    <body>
+        <fieldset>
+            <legend>Question No. 1</legend>
+            <form style="padding-left: 5%;">
+                <label for="nameInput"><h3>Enter list of trades by client name:</h3>(sepratred by comma)</label><br>
+                <textarea id ="nameInput" rows='5' cols="70" placeholder="A, B, C....." style="padding:2%;"></textarea><br>
+                <button id="str-btn">Star Clients</button>
+            </form><hr>
+            <div id="display-box" style="padding-left: 5%;"></div>
+        </fieldset>
+        <br/><br/>
+        <fieldset>
+            <legend>Question No. 2</legend>
+            <div style="padding-left: 5%;" >
+                <lable for="keys"><h3>Enter the list of keys below :</h3>(sepratred by comma)</lable><br/>
+                <textarea id ="keys" rows='5' cols="70" placeholder="A, B, C....." style="padding:2%;"></textarea><br>
+                <p> After clicking "NEXT" changes are not allowed.</p>
+                <button id="key-btn">NEXT</button>
+                <div id="value-box" style="display: none;">
+                    <lable for="values"><h3>Enter the list of values to be selected for keys (optional) :</h3>(sepratred by comma)</lable><br/>
+                    <textarea id ="values" rows='5' cols="70" placeholder="A, B, C....." style="padding:2%;"></textarea><br/>
+                    <p> After clicking "NEXT" changes are not allowed.</p>
+                    <button id="value-btn">NEXT</button>
+                </div>
+                <br/>
+                <div id="final-box" style="display: none;">
+                    <p>Select the key : </p>
+                    <select id="key-option" >
+                        <option selected disabled>Select Key</option>
+                    </select><br/>
+                    <p>Select the value for selected key :</p>
+                    <select id="value-option" >
+                        <option selected disabled>Select value</option>
+                    </select>
+                    <span> OR </span>
+                    <input type = "text" id="value-input" />
+                    <p>(Priority will be given to input box)</p>
+                    <br/>
+                    <div style = "display:flex; justify-content: space-between;">
+                        <button id="add-btn" onclick="addToObject()">ADD</button>
+                        <button id="add-btn" onclick="reStart()" title ="Restart the process again" style="background-color: black;color:white;">ReStart</button>
+                    </div>
+                </div>
+            </div><hr>
+            <div id="obj" style="padding-left: 5%;">
+                <table style="border:2px solid black;">
+                    <thead >
+                        <tr>
+                            <th style="border:2px solid black;"> Key </th>
+                            <th style="border:2px solid black;"> Value </th>
+                        </tr>
+                        <tbody id="table-body">
+                            
+                        </tbody>
+                    </thead>
+                </table>
+            </div>
+        </fieldset>
+        <br/><br/>
+        <fieldset>
+            <legend>Question No. 3</legend>
+            <div>
+                <h3>Question No. 2 is also develooped with React.js , visit below mentioned link : </h3>
+                <p><b>GitHub link : </b> <a href="https://github.com/rajbindersandhu/Object-Sandbox">Click Here</a></p>
+                <p><b>Hosted on link : </b> <a href="https://rajbindersandhu.github.io/Object-Sandbox/">Click Here</a></p>
+            </div>
+        </fieldset>
+
+        <script>
+            document.querySelector("#str-btn").addEventListener("click",displayStarClients);
+            function displayStarClients(e){
+                e.preventDefault();
+                if(document.querySelector("#nameInput").value.length > 0){
+                  let clientsList = document.querySelector("#nameInput").value.split(",");
+                    let clientObj ={};
+                    for(let i=0;i<clientsList.length;i++){
+                        if(clientsList[i] !== ""){
+                        let clientName = clientsList[i].trim();
+                        if(clientObj.hasOwnProperty(clientName)){
+                            let count = clientObj[clientName];
+                            count++;
+                            clientObj[clientName] = count;
+                        }
+                        else{
+                            clientObj[clientName] = 1;
+                        }
+                    }  
+                    }
+                    let starClients = {};
+                    for(let name in clientObj){
+                        if(clientObj[name]/clientsList.length >= 0.07){
+                            starClients[name] = ((clientObj[name]/clientsList.length)*100).toFixed(2);
+                        }
+                    }
+                    let box = document.querySelector("#display-box");
+
+
+                    Object.keys(starClients)
+                        .sort()
+                        .forEach(function(nam) {
+                            let show = document.createElement("div");
+                            show.className="show-box";
+                            show.innerHTML =`${nam} : ${starClients[nam]}%`;
+                            box.appendChild(show);
+                        });
+                }
+                else{alert("Question No. 1\nEnter Client names in input box.....")}
+            }
+
+           
+            document.querySelector("#key-btn").addEventListener("click",callValueBox);
+            function callValueBox(){
+                
+                
+                if(document.querySelector("#keys").value.length > 0){
+                    //console.log(document.querySelector("#keys").value);
+                    document.querySelector("#key-btn").disabled=true;
+                    let keyList= document.querySelector("#keys").value.split(",");
+                    document.querySelector("#keys").disabled = "true";
+                    document.querySelector("#value-box").style.display = "block";
+                    document.querySelector("#value-btn").addEventListener("click",(e)=> {
+                       
+                        let valueList = [];
+                        document.querySelector("#key-option").innerHTML = `<option selected disabled>Select Key</option>`;
+                        document.querySelector("#value-option").innerHTML = `<option selected disabled>Select Key</option>`;
+                        //console.log(document.querySelector("#value-box").value);
+                        if(document.querySelector("#values").value.length > 0){
+                            valueList = document.querySelector("#values").value.split(",");
+                        }
+                        document.querySelector("#final-box").style.display = "block";
+                        let optKyList = document.querySelector("#key-option");
+                        for(let i=0;i<keyList.length;i++){
+                            let opt = document.createElement("option");
+                            opt.className = "ky-opt";
+                            opt.innerHTML = `${keyList[i].trim()}`;
+                            optKyList.appendChild(opt);
+                        }
+                        let optVlList = document.querySelector("#value-option");
+                        for(let i=0;i<valueList.length;i++){
+                            let opt = document.createElement("option");
+                            opt.innerHTML = `${valueList[i].trim()}`;
+                            optVlList.appendChild(opt);
+                        }
+                        document.querySelector("#values").disabled =true;
+                        document.querySelector("#value-btn").disabled = true;
+                    });
+                    
+                }
+                else{alert("Question No. 2\nEnter Keys in input box.....")}
+            }
+
+            let finalObjList =[];
+            let count = 0;
+            function addToObject(){
+                let ky = document.querySelector("#key-option").value;
+                let vlue ;
+                if(document.querySelector("#value-input").value.length > 0){
+                    vlue = document.querySelector("#value-input").value;
+                }
+                else{
+                    vlue = document.querySelector("#value-option").value;
+                } 
+               
+                if(ky.length > 0 && vlue.length > 0){
+                   
+                    if(finalObjList.length == 0){
+                        let obj = {};
+                        obj[ky] =vlue;
+                        finalObjList.push(obj);
+                    }
+                    else{
+                        for(let i=0;i<finalObjList.length;i++){
+                            if(finalObjList[i].hasOwnProperty(ky)){
+                                if(finalObjList[i][ky] != vlue){
+                                    finalObjList[i][ky] = vlue;
+                                    break;
+                                }
+                                else{
+                                    break;
+                                }
+                               
+                            }
+                            else if(i == finalObjList.length-1){
+                                let obj = {};
+                                obj[ky] =vlue;
+                                finalObjList.push(obj);
+                            }
+                        }
+                    }
+                }
+                else{alert("Question No.2\nSelect key and value pair then press 'ADD'")}
+                if (finalObjList.length > 0 && count != finalObjList.length){
+                   count = finalObjList.length;
+                    let tableObj = document.querySelector("#table-body");
+                    for(let i =0;i<finalObjList.length;i++){
+                        let row = document.createElement("tr");
+                        row.innerHTML =`<td style="border:2px solid black;">${Object.keys(finalObjList[i])[0]}</td>
+                        <td style="border:2px solid black;"> ${Object.values(finalObjList[i])[0]}</td>
+                        `
+                        tableObj.appendChild(row);
+                    }
+                    document.querySelector("#value-input").value = "";
+                }
+               
+            }
+          
+            function reStart(){
+                finalObjList =[];
+                count =0;
+                document.querySelector("#key-btn").disabled =false;
+                document.querySelector("#value-btn").disabled = false;
+                document.querySelector("#value-input").value = "";
+                document.querySelector("#final-box").style.display = "none";
+                document.querySelector("#values").value ="";
+                document.querySelector("#values").disabled =false;
+                document.querySelector("#value-box").style.display = "none";
+                document.querySelector("#keys").value ="";
+                document.querySelector("#keys").disabled = false;
+                document.querySelector("#key-option").innerHTML = `<option selected disabled>Select Key</option>`;
+                document.querySelector("#value-option").innerHTML = `<option selected disabled>Select Key</option>`;
+            }
+           
+            
+            
+        </script>
+    </body>
+</html>
